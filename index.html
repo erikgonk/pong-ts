@@ -9,12 +9,42 @@
   <title>Pong TypeScript</title>
 </head>
 <body>
-  <div class="score">
-    <div id="left-score">0</div>
-    <div id="right-score">0</div>
+  <!-- Left sidebar - 10% -->
+  <div class="sidebar-left">
+    <div class="game-title">PONG</div>
   </div>
-  <div class="ball" id="ball"></div>
-  <div class="paddle left" id="left-paddle"></div>
-  <div class="paddle right" id="right-paddle"></div>
+
+  <!-- Main container - 90% -->
+  <div class="main-container">
+    <!-- Top yellow border - 2% -->
+    <div class="border-top"></div>
+
+    <!-- Middle section - 96% -->
+    <div class="middle-section">
+      <!-- Game area with rounded corners -->
+      <div class="game-area">
+        <!-- Score area at top -->
+        <div class="score">
+          <div class="score-section">
+            <div class="score-label">USER 1</div>
+            <div class="score-value" id="left-score">0</div>
+          </div>
+          <div class="score-section">
+            <div class="score-label">USER 2</div>
+            <div class="score-value" id="right-score">0</div>
+          </div>
+        </div>
+
+        <!-- Game elements -->
+        <div class="ball" id="ball"></div>
+        <div class="paddle left" id="left-paddle"></div>
+        <div class="paddle right" id="right-paddle"></div>
+      </div>
+      <!-- Right yellow border (2vw margin-right in game-area) -->
+    </div>
+
+    <!-- Bottom yellow border - 2% -->
+    <div class="border-bottom"></div>
+  </div>
 </body>
 </html>
