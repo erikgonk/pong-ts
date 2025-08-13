@@ -139,10 +139,12 @@ body {
   position: absolute;
   background-color: var(--foreground-color);
   top: calc(2vh + (var(--position) * 0.96vh));
+  left: 30px;
   transform: translateY(-50%);
   width: 12px;
   height: 80px;
   border-radius: 6px;
+  will-change: transform;
 }
 
 .paddle.left {
@@ -151,6 +153,7 @@ body {
 
 .paddle.right {
   right: 30px;
+  left: auto;
 }
 
 .ball {
@@ -159,10 +162,14 @@ body {
 
   position: absolute;
   background-color: var(--foreground-color);
-  left: calc(50% + (var(--x) - 50) * 0.88vw);
-  top: calc(2vh + (var(--y) * 0.96vh));
+  top: 50vh;
+  left: 50%;
+  transform: translate(
+    calc(-50% + (var(--x) - 50) * 0.88vw),
+    calc(-50% + (var(--y) - 50) * 0.96vh)
+  );
   border-radius: 50%;
-  transform: translate(-50%, -50%);
   width: 16px;
   height: 16px;
+  will-change: transform;
 }
