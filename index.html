@@ -4,47 +4,80 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="src/script.ts" type="module"></script>
   <title>Pong TypeScript</title>
+  <style>
+    /* Only essential game positioning that can't be done with Tailwind utilities */
+    .paddle-base {
+      --position: 50;
+      top: calc(2vh + (var(--position) * 0.96vh));
+    }
+    .ball-base {
+      --x: 50;
+      --y: 50;
+      transform: translate(
+        calc(-50% + (var(--x) - 50) * 0.88vw),
+        calc(-50% + (var(--y) - 50) * 0.96vh)
+      );
+    }
+    /* Center dotted line */
+    .game-area-dotted::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 10px,
+        #D9D9D9 10px,
+        #D9D9D9 20px
+      );
+      transform: translateX(-50%);
+      opacity: 0.8;
+    }
+  </style>
 </head>
-<body>
+<body class="m-0 overflow-hidden flex h-screen font-sans" style="background-color: #EDD24E;">
   <!-- Left sidebar - 10% -->
-  <div class="sidebar-left">
-    <div class="game-title">PONG</div>
+  <div class="w-[10vw] h-screen flex flex-col items-center justify-start pt-10" style="background-color: #EDD24E;">
+    <div class="absolute top-5 left-5 text-2xl font-bold tracking-[3px] z-10" style="color: #191A1A;">PONG</div>
   </div>
 
   <!-- Main container - 90% -->
-  <div class="main-container">
+  <div class="w-[90vw] h-screen flex flex-col" style="background-color: #EDD24E;">
     <!-- Top yellow border - 2% -->
-    <div class="border-top"></div>
+    <div class="h-[2vh]" style="background-color: #EDD24E;"></div>
 
     <!-- Middle section - 96% -->
-    <div class="middle-section">
+    <div class="h-[96vh] flex">
       <!-- Game area with rounded corners -->
-      <div class="game-area">
+      <div class="flex-1 mr-[2vw] rounded-lg relative flex flex-col game-area-dotted" style="background-color: #191A1A;">
         <!-- Score area at top -->
-        <div class="score">
-          <div class="score-section">
-            <div class="score-label" id="left-player">USER 1</div>
-            <div class="score-value" id="left-score">0</div>
+        <div class="flex justify-center items-center px-10 py-5 h-[20vh] z-10">
+          <div class="flex flex-col items-center text-center w-1/2">
+            <div class="text-lg font-bold mb-4 tracking-[2px]" style="color: #D9D9D9;" id="left-player">USER 1</div>
+            <div class="text-6xl font-bold leading-none" style="color: #D9D9D9;" id="left-score">0</div>
           </div>
-          <div class="score-section">
-            <div class="score-label" id="right-player">USER 2</div>
-            <div class="score-value" id="right-score">0</div>
+          <div class="flex flex-col items-center text-center w-1/2">
+            <div class="text-lg font-bold mb-4 tracking-[2px]" style="color: #D9D9D9;" id="right-player">USER 2</div>
+            <div class="text-6xl font-bold leading-none" style="color: #D9D9D9;" id="right-score">0</div>
           </div>
         </div>
 
         <!-- Game elements -->
-        <div class="ball" id="ball"></div>
-        <div class="paddle left" id="left-paddle"></div>
-        <div class="paddle right" id="right-paddle"></div>
+        <div class="ball-base absolute top-1/2 left-1/2 w-4 h-4 rounded-full" style="background-color: #D9D9D9;" id="ball"></div>
+        <div class="paddle-base absolute left-[30px] w-3 h-20 rounded-md -translate-y-1/2" style="background-color: #D9D9D9;" id="left-paddle"></div>
+        <div class="paddle-base absolute right-[30px] w-3 h-20 rounded-md -translate-y-1/2" style="background-color: #D9D9D9;" id="right-paddle"></div>
       </div>
       <!-- Right yellow border (2vw margin-right in game-area) -->
     </div>
 
     <!-- Bottom yellow border - 2% -->
-    <div class="border-bottom"></div>
+    <div class="h-[2vh]" style="background-color: #EDD24E;"></div>
   </div>
 </body>
 </html>

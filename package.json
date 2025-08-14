@@ -11,6 +11,7 @@
     "build-old": "tsc"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.11",
     "@types/node": "^24.2.1",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",

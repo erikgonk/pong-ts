@@ -15,7 +15,6 @@ const rightPlayerScoreElem = document.getElementById("right-score");
 // const leftPlayer = document.getElementById("left-player");
 // const rightPlayer = document.getElementById("right-player");
 
-
 if (!ballElement || !leftPaddleElement || !rightPaddleElement || !leftPlayerScoreElem || !rightPlayerScoreElem) {
   throw new Error("Required DOM elements not found");
 }
@@ -94,12 +93,12 @@ function handleLose(): void {
   // ------------------------------- CHANGE THIS TO GO TO THE WINNER AND LOSER SCREEN
   // ------------------------------- CHANGE SCORE LIMIT maxScore
   if (leftPlayerScore >= maxScore) {
-    alert("Left Player Wins! Final Score: " + leftPlayerScore + " - " + rightPlayerScore);
+    // alert("Left Player Wins! Final Score: " + leftPlayerScore + " - " + rightPlayerScore);
     // Reset scores
     leftPlayerScoreElem!.textContent = "0";
     rightPlayerScoreElem!.textContent = "0";
   } else if (rightPlayerScore >= maxScore) {
-    alert("Right Player Wins! Final Score: " + leftPlayerScore + " - " + rightPlayerScore);
+    // alert("Right Player Wins! Final Score: " + leftPlayerScore + " - " + rightPlayerScore);
     // Reset scores
     leftPlayerScoreElem!.textContent = "0";
     rightPlayerScoreElem!.textContent = "0";
