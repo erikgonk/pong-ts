@@ -1,10 +1,10 @@
 import Ball from "./Ball.js";
 import Paddle from "./Paddle.js";
 
-let ballStuckTimer = 0;
+let ballStuckTimer = 0; // Tracks how long the ball has been stuck at edges
 const maxScore = 5; // Maximum score to win the game
 const PADDLE_SPEED = 0.08; // Adjust this value to change paddle speed
-const BALL_STUCK_TIMEOUT = 500; // 3 seconds in milliseconds
+const BALL_STUCK_TIMEOUT = 50; // 50 milliseconds
 const EDGE_THRESHOLD = 10; // Distance from top/bottom edge considered "stuck"
 
 const ballElement = document.getElementById("ball");
@@ -12,6 +12,9 @@ const leftPaddleElement = document.getElementById("left-paddle");
 const rightPaddleElement = document.getElementById("right-paddle");
 const leftPlayerScoreElem = document.getElementById("left-score");
 const rightPlayerScoreElem = document.getElementById("right-score");
+// const leftPlayer = document.getElementById("left-player");
+// const rightPlayer = document.getElementById("right-player");
+
 
 if (!ballElement || !leftPaddleElement || !rightPaddleElement || !leftPlayerScoreElem || !rightPlayerScoreElem) {
   throw new Error("Required DOM elements not found");
@@ -37,14 +40,13 @@ const keys: Keys = {
 };
 
 let lastTime: number | undefined;
-let frameCount = 0;
 
 function update(time: number): void {
   if (lastTime != null) {
     const delta = time - lastTime;
     
     // Limit frame rate to prevent excessive updates
-    if (delta < 16.67) { // ~60 FPS cap
+    if (delta < 8) { // called every ~8ms (120 FPS)
       window.requestAnimationFrame(update);
       return;
     }
@@ -54,15 +56,6 @@ function update(time: number): void {
     // Update both player paddles based on keyboard input
     updateLeftPlayerPaddle(delta);
     updateRightPlayerPaddle(delta);
-    
-    // Only update hue every few frames to reduce CPU load
-    frameCount++;
-    if (frameCount % 3 === 0) {
-      const hue = parseFloat(
-        getComputedStyle(document.documentElement).getPropertyValue("--hue")
-      );
-      document.documentElement.style.setProperty("--hue", (hue + delta * 0.01).toString());
-    }
 
     // Check if ball is stuck at top or bottom edges
     checkBallStuck(delta);
@@ -84,9 +77,14 @@ function isLose(): boolean {
 
 function handleLose(): void {
   const rect = ball.rect();
-  if (rect.right >= window.innerWidth) {
+  // const gameAreaLeft = window.innerWidth * 0.1; // 10vw left sidebar
+  const gameAreaRight = window.innerWidth * 0.98; // 98vw - 2vw right border
+  
+  if (rect.right >= gameAreaRight) {
+    // Ball went off right side - left player scores
     leftPlayerScoreElem!.textContent = (parseInt(leftPlayerScoreElem!.textContent || "0") + 1).toString();
   } else {
+    // Ball went off left side - right player scores
     rightPlayerScoreElem!.textContent = (parseInt(rightPlayerScoreElem!.textContent || "0") + 1).toString();
   }
   
@@ -125,8 +123,14 @@ function checkBallStuck(delta: number): void {
     ballStuckTimer += delta;
     
     if (ballStuckTimer >= BALL_STUCK_TIMEOUT) {
-      console.log("Ball was stuck for too long, resetting...");
-      ball.reset();
+      console.log("Ball was stuck for too long, giving it a push...");
+      // Give the ball a small push away from the edge
+      if (isNearTopEdge) {
+        ball.y = ball.y + 2; // Push down from top edge
+      }
+      if (isNearBottomEdge) {
+        ball.y = ball.y - 2; // Push up from bottom edge  
+      }
       ballStuckTimer = 0;
     }
   } else {

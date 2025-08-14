@@ -56,13 +56,12 @@ export default class Ball {
   }
 
   update(delta: number, paddleRects: DOMRect[]): void {
+    // to increase speed on paddle hits
     this.x += this.direction.x * this.velocity * delta;
     this.y += this.direction.y * this.velocity * delta;
-    // Removed continuous speed increase - now only increases on paddle hits
     const rect = this.rect();
 
-    // Calculate game area boundaries - entire game board height
-    // From top of game board to bottom (2vh to 98vh)
+    // Game Board (2vh to 98vh)
     const gameAreaTop = window.innerHeight * 0.02; // Top border
     const gameAreaBottom = window.innerHeight * 0.98; // Bottom border
 
@@ -105,7 +104,7 @@ export default class Ball {
         this.direction.x /= magnitude;
         this.direction.y /= magnitude;
         
-        // Original Pong style: Increase speed on paddle hit
+        // Increase speed on paddle hit
         this.velocity = Math.min(this.velocity * PADDLE_HIT_SPEED_INCREASE, MAX_VELOCITY);
       }
     });
