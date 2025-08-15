@@ -2,23 +2,44 @@ import Ball from "./Ball.js";
 import Paddle from "./Paddle.js";
 
 let ballStuckTimer = 0; // Tracks how long the ball has been stuck at edges
-const maxScore = 5; // Maximum score to win the game
+let isPaused = false; // Game pause state
+const maxScore = 2; // Maximum score to win the game
 const PADDLE_SPEED = 0.08; // Adjust this value to change paddle speed
 const BALL_STUCK_TIMEOUT = 50; // 50 milliseconds
 const EDGE_THRESHOLD = 10; // Distance from top/bottom edge considered "stuck"
+
+// Function to toggle pause state and update UI
+function togglePause(): void {
+  isPaused = !isPaused;
+  if (isPaused) {
+    pauseOverlay!.classList.remove('hidden');
+    gameArea!.classList.add('blur-[9px]');
+  } else {
+    pauseOverlay!.classList.add('hidden');
+    gameArea!.classList.remove('blur-[9px]');
+  }
+  console.log(isPaused ? "Game Paused" : "Game Resumed");
+}
 
 const ballElement = document.getElementById("ball");
 const leftPaddleElement = document.getElementById("left-paddle");
 const rightPaddleElement = document.getElementById("right-paddle");
 const leftPlayerScoreElem = document.getElementById("left-score");
 const rightPlayerScoreElem = document.getElementById("right-score");
-// const leftPlayer = document.getElementById("left-player");
-// const rightPlayer = document.getElementById("right-player");
+const leftPlayer = document.getElementById("left-player");
+const rightPlayer = document.getElementById("right-player");
+const pauseOverlay = document.getElementById("pause-overlay");
+const pauseBtn = document.getElementById("pause-btn");
+const playBtn = document.getElementById("play-btn");
+const gameContent = document.getElementById("game-content");
+const gameArea = document.getElementById("game-area");
 
-if (!ballElement || !leftPaddleElement || !rightPaddleElement || !leftPlayerScoreElem || !rightPlayerScoreElem) {
+if (!leftPlayer || !rightPlayer || !ballElement || !leftPaddleElement || !rightPaddleElement || !leftPlayerScoreElem || !rightPlayerScoreElem || !pauseOverlay || !pauseBtn || !playBtn || !gameContent || !gameArea) {
   throw new Error("Required DOM elements not found");
+} else {
+      leftPlayer!.textContent = "Erik";
+      rightPlayer!.textContent = "Simon";
 }
-
 const ball = new Ball(ballElement);
 const leftPlayerPaddle = new Paddle(leftPaddleElement);
 const rightPlayerPaddle = new Paddle(rightPaddleElement);
@@ -29,13 +50,15 @@ interface Keys {
   s: boolean;
   ArrowUp: boolean;
   ArrowDown: boolean;
+  ' ': boolean; // Space bar for pause
 }
 
 const keys: Keys = {
   w: false,
   s: false,
   ArrowUp: false,
-  ArrowDown: false
+  ArrowDown: false,
+  ' ': false
 };
 
 let lastTime: number | undefined;
@@ -49,19 +72,16 @@ function update(time: number): void {
       window.requestAnimationFrame(update);
       return;
     }
-    
-    ball.update(delta, [leftPlayerPaddle.rect(), rightPlayerPaddle.rect()]);
-    
-    // Update both player paddles based on keyboard input
-    updateLeftPlayerPaddle(delta);
-    updateRightPlayerPaddle(delta);
-
-    // Check if ball is stuck at top or bottom edges
-    checkBallStuck(delta);
-
-    if (isLose()) handleLose();
+    if (!isPaused) {
+      ball.update(delta, [leftPlayerPaddle.rect(), rightPlayerPaddle.rect()]);
+      updateLeftPlayerPaddle(delta);
+      updateRightPlayerPaddle(delta);
+      checkBallStuck(delta);
+      if (isLose()) {
+        handleLose();
+      }
+    }
   }
-
   lastTime = time;
   window.requestAnimationFrame(update);
 }
@@ -76,34 +96,26 @@ function isLose(): boolean {
 
 function handleLose(): void {
   const rect = ball.rect();
-  // const gameAreaLeft = window.innerWidth * 0.1; // 10vw left sidebar
   const gameAreaRight = window.innerWidth * 0.98; // 98vw - 2vw right border
+  let leftPlayerScore = parseInt(leftPlayerScoreElem!.textContent || "0");
+  let rightPlayerScore = parseInt(rightPlayerScoreElem!.textContent || "0");
   
   if (rect.right >= gameAreaRight) {
     // Ball went off right side - left player scores
-    leftPlayerScoreElem!.textContent = (parseInt(leftPlayerScoreElem!.textContent || "0") + 1).toString();
+    leftPlayerScoreElem!.textContent = (leftPlayerScore + 1).toString();
+    leftPlayerScore += 1;
   } else {
     // Ball went off left side - right player scores
-    rightPlayerScoreElem!.textContent = (parseInt(rightPlayerScoreElem!.textContent || "0") + 1).toString();
+    rightPlayerScoreElem!.textContent = (rightPlayerScore + 1).toString();
+    rightPlayerScore += 1;
   }
   
-  // Check if someone won (reached maxScore points)
-  const leftPlayerScore = parseInt(leftPlayerScoreElem!.textContent || "0");
-  const rightPlayerScore = parseInt(rightPlayerScoreElem!.textContent || "0");
-  // ------------------------------- CHANGE THIS TO GO TO THE WINNER AND LOSER SCREEN
-  // ------------------------------- CHANGE SCORE LIMIT maxScore
-  if (leftPlayerScore >= maxScore) {
-    // alert("Left Player Wins! Final Score: " + leftPlayerScore + " - " + rightPlayerScore);
-    // Reset scores
-    leftPlayerScoreElem!.textContent = "0";
-    rightPlayerScoreElem!.textContent = "0";
-  } else if (rightPlayerScore >= maxScore) {
-    // alert("Right Player Wins! Final Score: " + leftPlayerScore + " - " + rightPlayerScore);
-    // Reset scores
-    leftPlayerScoreElem!.textContent = "0";
-    rightPlayerScoreElem!.textContent = "0";
-  }
   
+  if (leftPlayerScore >= maxScore || rightPlayerScore >= maxScore) {
+    alert(leftPlayerScore + " - " + rightPlayerScore);
+    leftPlayerScoreElem!.textContent = "0";
+    rightPlayerScoreElem!.textContent = "0";
+  }  
   ball.reset();
   ballStuckTimer = 0; // Reset stuck timer when someone scores
 }
@@ -160,24 +172,44 @@ function updateRightPlayerPaddle(delta: number): void {
   }
 }
 
+// Helper function to map key events to our keys object
+function getKeyFromEvent(e: KeyboardEvent): keyof Keys | null {
+  const keyLower = e.key.toLowerCase();
+  if (keyLower === 'w' || keyLower === 's') return keyLower;
+  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') return e.key;
+  if (e.key === ' ') return ' '; // Space bar
+  return null;
+}
+
 // Keyboard event listeners
 document.addEventListener("keydown", (e: KeyboardEvent) => {
-  const key = e.key.toLowerCase();
-  if (key in keys) {
-    (keys as any)[key] = true;
-  }
-  if (e.key in keys) {
-    (keys as any)[e.key] = true;
+  const mappedKey = getKeyFromEvent(e);
+  if (mappedKey) {
+    // Handle space bar press - toggle pause only on keydown to avoid repeated toggles
+    if (mappedKey === ' ' && !keys[' ']) {
+      togglePause();
+    }
+    keys[mappedKey] = true;
   }
 });
 
 document.addEventListener("keyup", (e: KeyboardEvent) => {
-  const key = e.key.toLowerCase();
-  if (key in keys) {
-    (keys as any)[key] = false;
+  const mappedKey = getKeyFromEvent(e);
+  if (mappedKey) {
+    keys[mappedKey] = false;
   }
-  if (e.key in keys) {
-    (keys as any)[e.key] = false;
+});
+
+// Button click event listeners
+pauseBtn!.addEventListener("click", () => {
+  if (!isPaused) {
+    togglePause();
+  }
+});
+
+playBtn!.addEventListener("click", () => {
+  if (isPaused) {
+    togglePause();
   }
 });
 
