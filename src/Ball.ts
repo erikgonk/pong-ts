@@ -35,6 +35,18 @@ export default class Ball {
     this.ballElem.style.setProperty("--y", value.toString());
   }
 
+  get directionX(): number {
+    return this.direction.x;
+  }
+
+  get directionY(): number {
+    return this.direction.y;
+  }
+
+  get ballVelocity(): number {
+    return this.velocity;
+  }
+
   rect(): DOMRect {
     return this.ballElem.getBoundingClientRect();
   }
@@ -56,13 +68,18 @@ export default class Ball {
     }
     this.velocity = INITIAL_VELOCITY;
   }
+  // Add this property:
+  private lastVerticalBounce: number = 0;
 
-  // redirectBall(): void {
-  //   setTimeout(() => {
-  //     this.direction.y *= -1;
-  //   }, 50); // 50ms redirect duration
-  // }
-
+  // Add this method:
+  private bounceVertical(): void {
+    const now = Date.now();
+    if (now - this.lastVerticalBounce >= 100) { // 10ms cooldown
+      this.direction.y *= -1; // Immediate reversal
+      this.lastVerticalBounce = now;
+    }
+  }
+  
   update(delta: number, leftPaddle: Paddle, rightPaddle: Paddle): void {
     const paddleRects = [leftPaddle.rect(), rightPaddle.rect()];
     // to increase speed on paddle hits
@@ -75,10 +92,7 @@ export default class Ball {
     // Vertical boundaries
     if (rect.bottom >= gameAreaBottom || rect.top <= gameAreaTop) {
       // this.direction.y *= -1;
-      setTimeout(() => {
-        this.direction.y *= -1;
-      }, 5); // 50ms redirect duration
-      // this.redirectBall();
+      this.bounceVertical();
     }
     // Check collision with each paddle individually
     paddleRects.forEach(paddleRect => {
