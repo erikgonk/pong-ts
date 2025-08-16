@@ -32,4 +32,14 @@ export default class Paddle {
     const PADDLE_HALF_HEIGHT = 5; // Half of paddle height (10vh / 2 = 5vh)
     this.position = Math.max(PADDLE_HALF_HEIGHT, Math.min(100 - PADDLE_HALF_HEIGHT, this.position));
   }
+
+  highlight(): void {
+    // Change to yellow highlight
+    this.paddleElem.style.backgroundColor = '#EDD24E';
+    
+    // Reset to original color after a short delay
+    setTimeout(() => {
+      this.paddleElem.style.backgroundColor = '#D9D9D9';
+    }, 150); // 150ms highlight duration
+  }
 }

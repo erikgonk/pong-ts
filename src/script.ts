@@ -3,10 +3,12 @@ import Paddle from "./Paddle.js";
 
 let ballStuckTimer = 0; // Tracks how long the ball has been stuck at edges
 let isPaused = false; // Game pause state
+let isAILeft = false; // AI mode
+let isAIRight = false; // AI mode
 const maxScore = 2; // Maximum score to win the game
 const PADDLE_SPEED = 0.08; // Adjust this value to change paddle speed
 const BALL_STUCK_TIMEOUT = 50; // 50 milliseconds
-const EDGE_THRESHOLD = 10; // Distance from top/bottom edge considered "stuck"
+const EDGE_THRESHOLD = 25; // Distance from top/bottom edge considered "stuck"
 
 // Function to toggle pause state and update UI
 function togglePause(): void {
@@ -73,7 +75,7 @@ function update(time: number): void {
       return;
     }
     if (!isPaused) {
-      ball.update(delta, [leftPlayerPaddle.rect(), rightPlayerPaddle.rect()]);
+      ball.update(delta, leftPlayerPaddle, rightPlayerPaddle);
       updateLeftPlayerPaddle(delta);
       updateRightPlayerPaddle(delta);
       checkBallStuck(delta);
@@ -151,23 +153,27 @@ function checkBallStuck(delta: number): void {
 }
 
 function updateLeftPlayerPaddle(delta: number): void {
+  if (isAILeft) {
+    return ;
+  }
   // Left player controls: W (up) and S (down)
   if (keys.w) {
     // Constrain paddle to game area: account for paddle height (80px ≈ 4vh)
     leftPlayerPaddle.position = Math.max(4, leftPlayerPaddle.position - PADDLE_SPEED * delta);
-  }
-  if (keys.s) {
+  } else if (keys.s) {
     leftPlayerPaddle.position = Math.min(92, leftPlayerPaddle.position + PADDLE_SPEED * delta);
   }
 }
 
 function updateRightPlayerPaddle(delta: number): void {
+  if (isAIRight) {
+    return ;
+  }
   // Right player controls: Arrow Up and Arrow Down
   if (keys.ArrowUp) {
     // Constrain paddle to game area: account for paddle height (80px ≈ 4vh)
     rightPlayerPaddle.position = Math.max(4, rightPlayerPaddle.position - PADDLE_SPEED * delta);
-  }
-  if (keys.ArrowDown) {
+  } else if (keys.ArrowDown) {
     rightPlayerPaddle.position = Math.min(92, rightPlayerPaddle.position + PADDLE_SPEED * delta);
   }
 }

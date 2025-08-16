@@ -77,8 +77,8 @@
         </div>
       </div>
       
-      <!-- Pause Overlay (outside game area, positioned absolutely over it) -->
-      <div id="pause-overlay" class="absolute inset-0 flex items-center justify-center hidden z-30">
+      <!-- Pause Overlay (positioned over the game area but outside to avoid blur) -->
+      <div id="pause-overlay" class="absolute top-0 left-0 right-[2vw] bottom-0 flex items-center justify-center hidden z-30">
         <div class="flex space-x-8">
           <!-- Pause Button (Left) -->
           <button id="pause-btn" class="group w-20 h-20 bg-[#EDD24E] rounded-lg flex items-center justify-center hover:bg-[#191A1A] hover:bg-opacity-0 hover:border hover:border-[#EDD24E] transition-colors">
@@ -94,6 +94,7 @@
           </button>
         </div>
       </div>
+    </div>
     </div>
     <div class="h-[2vh]" style="background-color: #EDD24E;"></div>
   </div>
