@@ -88,14 +88,14 @@ function update(time: number): void {
 function isLose(): boolean {
   const rect = ball.rect();
   // Check if ball goes beyond the game board area
-  const gameAreaLeft = window.innerWidth * 0.1; // 10vw left sidebar
-  const gameAreaRight = window.innerWidth * 0.98; // 98vw - 2vw right border
+  const gameAreaLeft = 64; // 64px left sidebar
+  const gameAreaRight = window.innerWidth - 32; // Account for 2vw right margin (approx 32px at 1600px width)
   return rect.right >= gameAreaRight || rect.left <= gameAreaLeft;
 }
 
 function handleLose(): void {
   const rect = ball.rect();
-  const gameAreaRight = window.innerWidth * 0.98; // 98vw - 2vw right border
+  const gameAreaRight = window.innerWidth - 32; // Account for 2vw right margin (approx 32px at 1600px width)
   let leftPlayerScore = parseInt(leftPlayerScoreElem!.textContent || "0");
   let rightPlayerScore = parseInt(rightPlayerScoreElem!.textContent || "0");
   
