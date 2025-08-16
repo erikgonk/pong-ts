@@ -57,6 +57,12 @@ export default class Ball {
     this.velocity = INITIAL_VELOCITY;
   }
 
+  // redirectBall(): void {
+  //   setTimeout(() => {
+  //     this.direction.y *= -1;
+  //   }, 50); // 50ms redirect duration
+  // }
+
   update(delta: number, leftPaddle: Paddle, rightPaddle: Paddle): void {
     const paddleRects = [leftPaddle.rect(), rightPaddle.rect()];
     // to increase speed on paddle hits
@@ -68,7 +74,11 @@ export default class Ball {
     const gameAreaBottom = window.innerHeight * 0.98; // Bottom border
     // Vertical boundaries
     if (rect.bottom >= gameAreaBottom || rect.top <= gameAreaTop) {
-      this.direction.y *= -1;
+      // this.direction.y *= -1;
+      setTimeout(() => {
+        this.direction.y *= -1;
+      }, 5); // 50ms redirect duration
+      // this.redirectBall();
     }
     // Check collision with each paddle individually
     paddleRects.forEach(paddleRect => {

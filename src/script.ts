@@ -1,14 +1,11 @@
 import Ball from "./Ball.js";
 import Paddle from "./Paddle.js";
 
-let ballStuckTimer = 0; // Tracks how long the ball has been stuck at edges
 let isPaused = false; // Game pause state
 let isAILeft = false; // AI mode
 let isAIRight = false; // AI mode
-const maxScore = 2; // Maximum score to win the game
+const maxScore = 5; // Maximum score to win the game
 const PADDLE_SPEED = 0.08; // Adjust this value to change paddle speed
-const BALL_STUCK_TIMEOUT = 50; // 50 milliseconds
-const EDGE_THRESHOLD = 25; // Distance from top/bottom edge considered "stuck"
 
 // Function to toggle pause state and update UI
 function togglePause(): void {
@@ -78,7 +75,7 @@ function update(time: number): void {
       ball.update(delta, leftPlayerPaddle, rightPlayerPaddle);
       updateLeftPlayerPaddle(delta);
       updateRightPlayerPaddle(delta);
-      checkBallStuck(delta);
+      // checkBallStuck(delta);
       if (isLose()) {
         handleLose();
       }
@@ -117,39 +114,8 @@ function handleLose(): void {
     alert(leftPlayerScore + " - " + rightPlayerScore);
     leftPlayerScoreElem!.textContent = "0";
     rightPlayerScoreElem!.textContent = "0";
-  }  
-  ball.reset();
-  ballStuckTimer = 0; // Reset stuck timer when someone scores
-}
-
-function checkBallStuck(delta: number): void {
-  const rect = ball.rect();
-  // Calculate game area boundaries - entire game board
-  const gameAreaTop = window.innerHeight * 0.02;
-  const gameAreaBottom = window.innerHeight * 0.98;
-  
-  const isNearTopEdge = rect.top <= gameAreaTop + EDGE_THRESHOLD;
-  const isNearBottomEdge = rect.bottom >= gameAreaBottom - EDGE_THRESHOLD;
-  
-  if (isNearTopEdge || isNearBottomEdge) {
-    // Ball is near an edge, increase timer
-    ballStuckTimer += delta;
-    
-    if (ballStuckTimer >= BALL_STUCK_TIMEOUT) {
-      console.log("Ball was stuck for too long, giving it a push...");
-      // Give the ball a small push away from the edge
-      if (isNearTopEdge) {
-        ball.y = ball.y + 2; // Push down from top edge
-      }
-      if (isNearBottomEdge) {
-        ball.y = ball.y - 2; // Push up from bottom edge  
-      }
-      ballStuckTimer = 0;
-    }
-  } else {
-    // Ball is not near edges, reset timer
-    ballStuckTimer = 0;
   }
+  ball.reset();
 }
 
 function updateLeftPlayerPaddle(delta: number): void {
