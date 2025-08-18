@@ -2,10 +2,10 @@ export class GameConfig {
   // Game rules
   public static readonly MAX_SCORE = 5;
   public static readonly PADDLE_SPEED = 0.08;
-  public static readonly FRAME_RATE_LIMIT = 8; // ms (120 FPS)
+  public static readonly FRAME_RATE_LIMIT = 12; // ms (120 FPS)
   
   // AI settings
-  public static readonly AI_UPDATE_COOLDOWN = 1000; // ms
+  public static readonly AI_UPDATE_COOLDOWN = 100; // ms
   public static readonly AI_TARGET_THRESHOLD = 2.0; // Minimum change to update target
   public static readonly AI_MOVEMENT_THRESHOLD = 1.0; // Minimum distance to move paddle
   public static readonly AI_MAX_SIMULATION_STEPS = 10;

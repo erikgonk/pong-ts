@@ -77,25 +77,25 @@ export class AIManager {
   }
 
   private predictBallLanding(ball: Ball, targetSide: PlayerSide): number {
-    // Get current ball state
-    const ballX = ball.x;
-    const ballY = ball.y;
-    const directionX = ball.directionX;
-    const directionY = ball.directionY;
+    // Get current ball state and scale by 1000 for better precision
+    const ballX = ball.x * 1000;
+    const ballY = ball.y * 1000;
+    const directionX = ball.directionX * 1000;
+    const directionY = ball.directionY * 1000;
     
     // Calculate the actual game area dimensions
     const gameAreaWidth = window.innerWidth - GameConfig.SIDEBAR_WIDTH - 
                          (window.innerWidth * GameConfig.RIGHT_MARGIN_VW);
 
-    // Calculate paddle positions in ball coordinate system (0-100)
+    // Calculate paddle positions in ball coordinate system (0-100) * 1000
     const leftPaddleXPixels = GameConfig.PADDLE_X_OFFSET;
     const rightPaddleXPixels = gameAreaWidth - GameConfig.PADDLE_X_OFFSET;
 
-    // Convert to ball coordinate system
+    // Convert to ball coordinate system (scaled by 1000)
     const gameCenter = gameAreaWidth / 2;
     const scalingFactor = window.innerWidth * GameConfig.BALL_SCALING_FACTOR;
-    const leftPaddleX = ((leftPaddleXPixels - gameCenter) / scalingFactor) + 50;
-    const rightPaddleX = ((rightPaddleXPixels - gameCenter) / scalingFactor) + 50;
+    const leftPaddleX = (((leftPaddleXPixels - gameCenter) / scalingFactor) + 50) * 1000;
+    const rightPaddleX = (((rightPaddleXPixels - gameCenter) / scalingFactor) + 50) * 1000;
     
     const targetX = targetSide === PlayerSide.LEFT ? leftPaddleX : rightPaddleX;
     
@@ -106,8 +106,9 @@ export class AIManager {
       return 50;
     }
     
-    // Use geometric trajectory calculation
-    return this.simulateBallTrajectoryGeometric(ballX, ballY, directionX, directionY, targetX);
+    // Use geometric trajectory calculation and scale result back down
+    const result = this.simulateBallTrajectoryGeometric(ballX, ballY, directionX, directionY, targetX);
+    return result / 1000;
   }
 
   private simulateBallTrajectoryGeometric(
@@ -122,18 +123,24 @@ export class AIManager {
     let currentDirX = directionX;
     let currentDirY = directionY;
     
+    // Scale boundary values by 1000 to match our coordinate system
+    const topBoundary = GameConfig.GAME_AREA_TOP_PERCENT * 1000;
+    const bottomBoundary = GameConfig.GAME_AREA_BOTTOM_PERCENT * 1000;
+    const paddleBoundaryTop = GameConfig.PADDLE_BOUNDARY_TOP * 1000;
+    const paddleBoundaryBottom = GameConfig.PADDLE_BOUNDARY_BOTTOM * 1000;
+    
     let steps = 0;
     
     while (steps < GameConfig.AI_MAX_SIMULATION_STEPS) {
       // Check if ball is moving toward target
-      if (Math.abs(currentDirX) < 0.001) {
-        return Math.max(GameConfig.PADDLE_BOUNDARY_TOP, 
-                       Math.min(GameConfig.PADDLE_BOUNDARY_BOTTOM, currentY));
+      if (Math.abs(currentDirX) < 1) { // Scaled threshold (was 0.001)
+        return Math.max(paddleBoundaryTop, 
+                       Math.min(paddleBoundaryBottom, currentY));
       }
       
       if ((targetX - currentX) / currentDirX <= 0) {
-        return Math.max(GameConfig.PADDLE_BOUNDARY_TOP, 
-                       Math.min(GameConfig.PADDLE_BOUNDARY_BOTTOM, currentY));
+        return Math.max(paddleBoundaryTop, 
+                       Math.min(paddleBoundaryBottom, currentY));
       }
       
       // Calculate how far to move in X to reach target
@@ -146,31 +153,47 @@ export class AIManager {
       const projectedY = currentY + deltaY;
       
       // Check if ball hits top or bottom boundary during this trajectory
-      if (projectedY < GameConfig.GAME_AREA_TOP_PERCENT && currentDirY < 0) {
+      if (projectedY < topBoundary && currentDirY < 0) {
         // Ball hits top boundary
-        const distanceToTop = GameConfig.GAME_AREA_TOP_PERCENT - currentY;
+        const distanceToTop = topBoundary - currentY;
         const xAtTop = currentX + distanceToTop * (currentDirX / currentDirY);
         currentX = xAtTop;
-        currentY = GameConfig.GAME_AREA_TOP_PERCENT;
-        currentDirY = Math.abs(currentDirY); // Bounce down
-      } else if (projectedY > GameConfig.GAME_AREA_BOTTOM_PERCENT && currentDirY > 0) {
+        currentY = topBoundary;
+        
+        // Mirror Ball.ts bouncing logic exactly
+        currentDirY *= -1; // Flip direction first
+        if (currentDirY < 0) {
+          currentDirY -= 100; // 0.1 * 1000 = 100 (make MORE negative)
+        } else {
+          currentDirY += 100; // 0.1 * 1000 = 100 (make MORE positive)
+        }
+        
+      } else if (projectedY > bottomBoundary && currentDirY > 0) {
         // Ball hits bottom boundary
-        const distanceToBottom = GameConfig.GAME_AREA_BOTTOM_PERCENT - currentY;
+        const distanceToBottom = bottomBoundary - currentY;
         const xAtBottom = currentX + distanceToBottom * (currentDirX / currentDirY);
         currentX = xAtBottom;
-        currentY = GameConfig.GAME_AREA_BOTTOM_PERCENT;
-        currentDirY = -Math.abs(currentDirY); // Bounce up
+        currentY = bottomBoundary;
+        
+        // Mirror Ball.ts bouncing logic exactly
+        currentDirY *= -1; // Flip direction first
+        if (currentDirY < 0) {
+          currentDirY -= 100; // 0.1 * 1000 = 100 (make MORE negative)
+        } else {
+          currentDirY += 100; // 0.1 * 1000 = 100 (make MORE positive)
+        }
+        
       } else {
         // Ball reaches target X without hitting boundaries
-        return Math.max(GameConfig.PADDLE_BOUNDARY_TOP, 
-                       Math.min(GameConfig.PADDLE_BOUNDARY_BOTTOM, projectedY));
+        return Math.max(paddleBoundaryTop, 
+                       Math.min(paddleBoundaryBottom, projectedY));
       }
       
       steps++;
     }
     
     // Fallback if simulation doesn't converge
-    return Math.max(GameConfig.PADDLE_BOUNDARY_TOP, 
-                   Math.min(GameConfig.PADDLE_BOUNDARY_BOTTOM, currentY));
+    return Math.max(paddleBoundaryTop, 
+                   Math.min(paddleBoundaryBottom, currentY));
   }
 }

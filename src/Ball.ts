@@ -76,14 +76,19 @@ export default class Ball {
     }
     this.velocity = INITIAL_VELOCITY;
   }
-  private lastVerticalBounce: number = 0;
+  // private lastVerticalBounce: number = 0;
 
   private bounceVertical(): void {
-    const now = Date.now();
-    if (now - this.lastVerticalBounce >= 200) { // 200ms cooldown
-      this.direction.y *= -1; // Immediate reversal
-      this.lastVerticalBounce = now;
+    // const now = Date.now();
+    // if (now - this.lastVerticalBounce >= 200) { // 200ms cooldown
+    this.direction.y *= -1; // Immediate reversal
+    if (this.direction.y < 0) {
+      this.direction.y -= 0.1;  
+    } else {
+      this.direction.y += 0.1;
     }
+      // this.lastVerticalBounce = now;
+    // }
   }
   
   update(delta: number, leftPaddle: Paddle, rightPaddle: Paddle): void {
@@ -126,7 +131,6 @@ export default class Ball {
           this.direction.x = -Math.cos(angle) * ballSpeed;
           this.direction.y = Math.sin(angle) * ballSpeed;
         }
-        
         // Normalize direction to maintain consistent speed
         const magnitude = Math.sqrt(this.direction.x * this.direction.x + this.direction.y * this.direction.y);
         this.direction.x /= magnitude;
