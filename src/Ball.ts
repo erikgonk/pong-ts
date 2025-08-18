@@ -13,6 +13,8 @@ export default class Ball {
   private ballElem: HTMLElement;
   private direction: Direction = { x: 0, y: 0 };
   private velocity: number = INITIAL_VELOCITY;
+  private _x: number = 50;
+  private _y: number = 50;
 
   constructor(ballElem: HTMLElement) {
     this.ballElem = ballElem;
@@ -20,19 +22,31 @@ export default class Ball {
   }
 
   get x(): number {
-    return parseFloat(getComputedStyle(this.ballElem).getPropertyValue("--x"));
+    return this._x;
   }
 
   set x(value: number) {
-    this.ballElem.style.setProperty("--x", value.toString());
+    this._x = value;
+    this.updatePosition();
   }
 
   get y(): number {
-    return parseFloat(getComputedStyle(this.ballElem).getPropertyValue("--y"));
+    return this._y;
   }
 
   set y(value: number) {
-    this.ballElem.style.setProperty("--y", value.toString());
+    this._y = value;
+    this.updatePosition();
+  }
+
+  private updatePosition(): void {
+    // Calculate transform values based on the original CSS logic:
+    // transform: translate(calc(-50% + (var(--x) - 50) * 0.88vw), calc(-50% + (var(--y) - 50) * 0.96vh))
+    // When x=50, y=50 (center), this should result in translate(-50%, -50%) + translate(0vw, 0vh) = translate(-50%, -50%)
+    // But since we already have top-1/2 left-1/2 in CSS, we only need the offset part
+    const translateX = (this._x - 50) * 0.88;
+    const translateY = (this._y - 50) * 0.96;
+    this.ballElem.style.transform = `translate(${translateX}vw, ${translateY}vh)`;
   }
 
   get directionX(): number {

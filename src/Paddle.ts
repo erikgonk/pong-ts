@@ -2,6 +2,7 @@ const SPEED = 0.02;
 
 export default class Paddle {
   private paddleElem: HTMLElement;
+  private _position: number = 50;
 
   constructor(paddleElem: HTMLElement) {
     this.paddleElem = paddleElem;
@@ -9,13 +10,18 @@ export default class Paddle {
   }
 
   get position(): number {
-    return parseFloat(
-      getComputedStyle(this.paddleElem).getPropertyValue("--position")
-    );
+    return this._position;
   }
 
   set position(value: number) {
-    this.paddleElem.style.setProperty("--position", value.toString());
+    this._position = value;
+    this.updatePosition();
+  }
+
+  private updatePosition(): void {
+    // Calculate top position based on the original CSS logic: calc(2vh + (var(--position) * 0.96vh))
+    const topValue = 2 + (this._position * 0.96);
+    this.paddleElem.style.top = `${topValue}vh`;
   }
 
   rect(): DOMRect {

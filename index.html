@@ -7,21 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="src/main.ts" type="module"></script>
   <title>Pong TypeScript</title>
-  <style>
-    /* Only essential game positioning that can't be done with Tailwind utilities */
-    .paddle-base {
-      --position: 50;
-      top: calc(2vh + (var(--position) * 0.96vh));
-    }
-    .ball-base {
-      --x: 50;
-      --y: 50;
-      transform: translate(
-        calc(-50% + (var(--x) - 50) * 0.88vw),
-        calc(-50% + (var(--y) - 50) * 0.96vh)
-      );
-    }
-  </style>
 </head>
 <body class="m-0 overflow-hidden flex h-screen font-sans" style="background-color: #EDD24E;">
   <!-- Left sidebar - 64px -->
@@ -96,9 +81,9 @@
           </div>
 
           <!-- Game elements -->
-          <div class="ball-base absolute top-1/2 left-1/2 w-4 h-4 rounded-full" style="background-color: #D9D9D9;" id="ball"></div>
-          <div class="paddle-base absolute left-[30px] w-3 h-20 rounded-md -translate-y-1/2" style="background-color: #D9D9D9;" id="left-paddle"></div>
-          <div class="paddle-base absolute right-[30px] w-3 h-20 rounded-md -translate-y-1/2" style="background-color: #D9D9D9;" id="right-paddle"></div>
+          <div class="absolute top-1/2 left-1/2 w-4 h-4 rounded-full bg-[#D9D9D9]" id="ball"></div>
+          <div class="absolute left-[30px] w-3 h-20 rounded-md -translate-y-1/2 bg-[#D9D9D9]" id="left-paddle"></div>
+          <div class="absolute right-[30px] w-3 h-20 rounded-md -translate-y-1/2 bg-[#D9D9D9]" id="right-paddle"></div>
         </div>
       </div>
       
