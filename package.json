@@ -2,7 +2,7 @@
   "name": "pong-ts",
   "version": "1.0.0",
   "description": "Pong game built with TypeScript",
-  "main": "dist/script.js",
+  "main": "dist/main.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

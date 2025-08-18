@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="src/script.ts" type="module"></script>
+  <script src="src/main.ts" type="module"></script>
   <title>Pong TypeScript</title>
   <style>
     /* Only essential game positioning that can't be done with Tailwind utilities */
@@ -21,23 +21,9 @@
         calc(-50% + (var(--y) - 50) * 0.96vh)
       );
     }
-    /* Center dotted line */
-    .game-area-dotted::before {
-      content: '';
-      position: absolute;
-      left: 50%;
-      top: 0;
-      bottom: 0;
-      width: 4px;
-      background-image: repeating-linear-gradient(
-        to bottom,
-        transparent,
-        transparent 10px,
-        #D9D9D9 10px,
-        #D9D9D9 20px
-      );
-      transform: translateX(-50%);
-      opacity: 0.8;
+    /* Center dotted line using Tailwind's before utilities + minimal custom background */
+    .dotted-center::before {
+      background-image: repeating-linear-gradient(to bottom, transparent, transparent 10px, #D9D9D9 10px, #D9D9D9 20px);
     }
   </style>
 </head>
@@ -55,7 +41,7 @@
     <!-- Middle section - 96% -->
     <div class="h-[96vh] flex relative">
       <!-- Game area with rounded corners -->
-      <div id="game-area" class="flex-1 mr-[2vw] rounded-lg relative flex flex-col game-area-dotted transition-all duration-300" style="background-color: #191A1A;">
+      <div id="game-area" class="flex-1 mr-[2vw] rounded-lg relative flex flex-col transition-all duration-300 dotted-center before:content-[''] before:absolute before:left-1/2 before:top-0 before:bottom-0 before:w-1 before:-translate-x-1/2 before:opacity-80" style="background-color: #191A1A;">
         <!-- Game content wrapper -->
         <div id="game-content" class="absolute inset-0 rounded-lg">
           <!-- Score area at top -->
