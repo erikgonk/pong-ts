@@ -2,7 +2,7 @@ import Paddle from "./Paddle.js";
 
 const INITIAL_VELOCITY = 0.055;
 const PADDLE_HIT_SPEED_INCREASE = 1.10; // 5% speed increase per paddle hit
-const MAX_VELOCITY = 0.12; // Maximum speed limit
+const MAX_VELOCITY = 0.15; // Maximum speed limit
 
 interface Direction {
   x: number;
@@ -40,10 +40,6 @@ export default class Ball {
   }
 
   private updatePosition(): void {
-    // Calculate transform values based on the original CSS logic:
-    // transform: translate(calc(-50% + (var(--x) - 50) * 0.88vw), calc(-50% + (var(--y) - 50) * 0.96vh))
-    // When x=50, y=50 (center), this should result in translate(-50%, -50%) + translate(0vw, 0vh) = translate(-50%, -50%)
-    // But since we already have top-1/2 left-1/2 in CSS, we only need the offset part
     const translateX = (this._x - 50) * 0.88;
     const translateY = (this._y - 50) * 0.96;
     this.ballElem.style.transform = `translate(${translateX}vw, ${translateY}vh)`;
@@ -67,11 +63,9 @@ export default class Ball {
 
   reset(): void {
     // Center the ball in the middle of the game board
-    // X: 50% of the game area (which starts at 10vw and is 86vw wide)
-    // Y: 50% of the game area (which starts at 2vh and is 96vh tall)
-    this.x = 50; // This represents 50% of the game area width
-    this.y = 50; // This represents 50% of the game area height
-    
+    this.x = 50;
+    this.y = 50;
+
     this.direction = { x: 0, y: 0 };
     while (
       Math.abs(this.direction.x) <= 0.2 ||
@@ -82,13 +76,11 @@ export default class Ball {
     }
     this.velocity = INITIAL_VELOCITY;
   }
-  // Add this property:
   private lastVerticalBounce: number = 0;
 
-  // Add this method:
   private bounceVertical(): void {
     const now = Date.now();
-    if (now - this.lastVerticalBounce >= 100) { // 10ms cooldown
+    if (now - this.lastVerticalBounce >= 200) { // 200ms cooldown
       this.direction.y *= -1; // Immediate reversal
       this.lastVerticalBounce = now;
     }
