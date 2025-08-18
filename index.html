@@ -21,10 +21,6 @@
         calc(-50% + (var(--y) - 50) * 0.96vh)
       );
     }
-    /* Center dotted line using Tailwind's before utilities + minimal custom background */
-    .dotted-center::before {
-      background-image: repeating-linear-gradient(to bottom, transparent, transparent 10px, #D9D9D9 10px, #D9D9D9 20px);
-    }
   </style>
 </head>
 <body class="m-0 overflow-hidden flex h-screen font-sans" style="background-color: #EDD24E;">
@@ -41,9 +37,52 @@
     <!-- Middle section - 96% -->
     <div class="h-[96vh] flex relative">
       <!-- Game area with rounded corners -->
-      <div id="game-area" class="flex-1 mr-[2vw] rounded-lg relative flex flex-col transition-all duration-300 dotted-center before:content-[''] before:absolute before:left-1/2 before:top-0 before:bottom-0 before:w-1 before:-translate-x-1/2 before:opacity-80" style="background-color: #191A1A;">
+      <div id="game-area" class="flex-1 mr-[2vw] rounded-lg relative flex flex-col transition-all duration-300" style="background-color: #191A1A;">
         <!-- Game content wrapper -->
         <div id="game-content" class="absolute inset-0 rounded-lg">
+          <!-- Center dotted line using simple HTML elements -->
+          <div class="absolute left-1/2 top-0 bottom-0 w-1 -translate-x-1/2 opacity-80 flex flex-col justify-around">
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+            <div class="h-2.5 bg-[#D9D9D9] rounded-sm"></div>
+          </div>
           <!-- Score area at top -->
           <div class="flex justify-center items-center px-10 py-5 h-[20vh] z-10">
             <div class="flex flex-col items-center text-center w-1/2">
