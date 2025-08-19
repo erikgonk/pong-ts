@@ -4,7 +4,7 @@ export class GameConfig {
   // Game rules
   public static MAX_SCORE = 5; // Game.maxScore |
   public static readonly PADDLE_SPEED = 0.08;
-  public static readonly FRAME_RATE_LIMIT = 12; // ms (120 FPS)
+  public static readonly FRAME_RATE_LIMIT = 4; // ms ( FPS)
   
   // AI settings
   public static AI_UPDATE_COOLDOWN = 100; // ms

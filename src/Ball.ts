@@ -2,7 +2,7 @@ import Paddle from "./Paddle.js";
 
 const INITIAL_VELOCITY = 0.055;
 const PADDLE_HIT_SPEED_INCREASE = 1.10; // 5% speed increase per paddle hit
-const MAX_VELOCITY = 0.15; // Maximum speed limit
+const MAX_VELOCITY = 0.13; // Maximum speed limit
 
 interface Direction {
   x: number;
@@ -68,27 +68,22 @@ export default class Ball {
 
     this.direction = { x: 0, y: 0 };
     while (
-      Math.abs(this.direction.x) <= 0.2 ||
-      Math.abs(this.direction.x) >= 0.9
+      Math.abs(this.direction.x) <= 0.3 ||
+      Math.abs(this.direction.x) >= 0.8
     ) {
       const heading = randomNumberBetween(0, 2 * Math.PI);
       this.direction = { x: Math.cos(heading), y: Math.sin(heading) };
     }
     this.velocity = INITIAL_VELOCITY;
   }
-  // private lastVerticalBounce: number = 0;
 
   private bounceVertical(): void {
-    // const now = Date.now();
-    // if (now - this.lastVerticalBounce >= 200) { // 200ms cooldown
-    this.direction.y *= -1; // Immediate reversal
+    this.direction.y *= -1;
     if (this.direction.y < 0) {
       this.direction.y -= 0.1;  
     } else {
       this.direction.y += 0.1;
     }
-      // this.lastVerticalBounce = now;
-    // }
   }
   
   update(delta: number, leftPaddle: Paddle, rightPaddle: Paddle): void {
@@ -97,9 +92,8 @@ export default class Ball {
     this.x += this.direction.x * this.velocity * delta;
     this.y += this.direction.y * this.velocity * delta;
     const rect = this.rect();
-    // Game Board (2vh to 98vh)
-    const gameAreaTop = window.innerHeight * 0.02; // Top border
-    const gameAreaBottom = window.innerHeight * 0.98; // Bottom border
+    const gameAreaTop = window.innerHeight * 0.02;
+    const gameAreaBottom = window.innerHeight * 0.98;
     // Vertical boundaries
     if (rect.bottom >= gameAreaBottom || rect.top <= gameAreaTop) {
       // this.direction.y *= -1;
