@@ -135,7 +135,7 @@ export default class Ball {
         const magnitude = Math.sqrt(this.direction.x * this.direction.x + this.direction.y * this.direction.y);
         this.direction.x /= magnitude;
         this.direction.y /= magnitude;
-        
+ 
         // Increase speed on paddle hit
         this.velocity = Math.min(this.velocity * PADDLE_HIT_SPEED_INCREASE, MAX_VELOCITY);
       }

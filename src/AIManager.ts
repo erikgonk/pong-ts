@@ -1,5 +1,6 @@
-import Ball from "./Ball.js";
-import { GameConfig } from "./GameConfig.js";
+import Ball from "./Ball.ts";
+import { GameConfig } from "./GameConfig.ts";
+// import { Game } from "./Game.ts";
 
 export enum PlayerSide {
   LEFT = 'left',

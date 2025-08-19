@@ -11,6 +11,7 @@ export interface GameOptions {
   rightPlayer: string;
   maxScore: number;
   gameMode: 'p-vs-ai' |  'ai-vs-p' | 'p-vs-p' | 'ai-vs-ai';
+  aiDifficulty?: 1000 | 100 | 1;
 }
 
 export class Game {
@@ -38,12 +39,21 @@ export class Game {
   private rightPaddleElement!: HTMLElement;
 
   constructor(options?: Partial<GameOptions>) {
+    // Update GameConfig with provided values
+    if (options?.maxScore) {
+      GameConfig.MAX_SCORE = options.maxScore;
+    }
+    if (options?.aiDifficulty) {
+      GameConfig.AI_UPDATE_COOLDOWN = options.aiDifficulty;
+    }
+    
     // Set default options and merge with provided options
     this.options = {
       leftPlayer: options?.leftPlayer || GameConfig.DEFAULT_LEFT_PLAYER,
       rightPlayer: options?.rightPlayer || GameConfig.DEFAULT_RIGHT_PLAYER,
       maxScore: options?.maxScore || GameConfig.MAX_SCORE,
       gameMode: options?.gameMode || 'p-vs-p',
+      aiDifficulty: options?.aiDifficulty || (GameConfig.AI_UPDATE_COOLDOWN as 1000 | 100 | 1)
     };
     this.initializeDOM();
     this.initializeManagers();
