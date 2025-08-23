@@ -13,7 +13,7 @@ const gameConfig: GameOptions = {
   // - 'p-vs-p'
   // - 'ai-vs-ai'
   gameMode: "ai-vs-ai",
-  aiDifficulty: 1 // 1000 | 100 | 1 (ms)
+  aiDifficulty: 1000 // 1000 | 100 | 1 (ms)
 };
 const game = new Game(gameConfig);
 game.start();
