@@ -273,15 +273,28 @@ export class Game {
       result = this.scoreManager.addScore('right');
     }
     
-    // Handle game end
+    // Only show dashboard at the end of the match (when maxScore is reached)
     if (result === GameResult.LEFT_WINS || result === GameResult.RIGHT_WINS) {
-      // Pause the game and show the pause overlay
-      this.isPaused = true;
-      this.uiManager.showPauseOverlay();
-      // Reset scores for next game
-      this.scoreManager.reset();
+      this.isPaused = true; // Stop the game loop
+      setTimeout(() => {
+        import('./Dashboard').then(({ showDashboard }) => {
+          const scores = this.scoreManager.getScores();
+          showDashboard({
+            username: this.options.leftPlayer, // or rightPlayer, adjust as needed
+            stats: {
+              won: scores.left,
+              lost: scores.right,
+              scores: scores.left,
+              friends: 3
+            },
+            points: {
+              scored: scores.left,
+              received: scores.right
+            }
+          });
+        });
+      }, 500); // Small delay to allow last frame to render
     }
-    
     this.ball.reset();
   }
 }
